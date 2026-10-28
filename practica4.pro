@@ -8,7 +8,8 @@ CONFIG += c++17 cmdline
 
 SOURCES += \
         main.cpp \
-        punto1.cpp
+        punto1.cpp \
+        red.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -16,4 +17,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    punto1.h
+    punto1.h \
+    red.h
+
+DISTFILES += \
+    red.txt
