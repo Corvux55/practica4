@@ -25,7 +25,9 @@ public:
 
     // Devuelve el nombre de este enrutador
     std::string getNombre() const;
-
+    //lee los caminos desde la clase red
+    std::map<std::string, std::vector<std::string>> getCaminos() const;
+    std::map<std::string, int> getCostos() const;
     // Metodos para manejar los vecinos directos
     void agregarVecino(std::string vec, int costo); // Agrega o cambia la conexion con un vecino
     void quitarVecino(std::string vec);             // Elimina un vecino directo

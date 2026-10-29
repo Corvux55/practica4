@@ -141,18 +141,29 @@ void red::imprimirTablas() const {
 
 // Consultar e imprimir la mejor ruta y el costo directo usando la tabla del origen
 bool red::consultarCamino(const std::string& origen, const std::string& destino) const {
-    // Verificamos que ambos enrutadores existan en el mapa
     if (enrutadores.find(origen) == enrutadores.end() || enrutadores.find(destino) == enrutadores.end()) {
-        std::cout << "Error: Uno o ambos enrutadores no existen en la red." << std::endl;
+        std::cout << "Error: Enrutador no existe." << std::endl;
         return false;
     }
 
     std::cout << "\n=== Consultar camino de " << origen << " a " << destino << " ===" << std::endl;
-    // Mostramos la tabla del origen para ver la ruta resultante hacia el destino
-    enrutadores.at(origen).verTabla();
+    auto caminos = enrutadores.at(origen).getCaminos();
+    auto costos = enrutadores.at(origen).getCostos();
+
+    if (caminos.find(destino) == caminos.end()) {
+        std::cout << "No hay camino posible.\n";
+        return false;
+    }
+    //Obtenemos el vector con la ruta (ej. ["A", "B", "C"])
+    auto ruta = caminos.at(destino);
+    std::cout << "Ruta: ";
+    for (size_t i = 0; i < ruta.size(); ++i) {
+        std::cout << ruta[i];
+        if (i + 1 < ruta.size()) std::cout << " -> ";
+    }
+    std::cout << "\nCosto total: " << costos.at(destino) << "\n";
     return true;
 }
-
 // Generar una red de forma aleatoria con cierta cantidad de nodos y enlaces
 void red::generarRedAleatoria(int numNodos, int probabilidadEnlace, int costoMaximo) {
     // Limpiamos los enrutadores que teniamos cargados previamente

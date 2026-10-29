@@ -22,3 +22,5 @@ HEADERS += \
 
 DISTFILES += \
     red.txt
+
+RESOURCES +=

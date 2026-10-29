@@ -75,3 +75,9 @@ void Enrutador::verTabla() const {
         std::cout << std::endl;
     }
 }
+std::map<std::string, std::vector<std::string>> Enrutador::getCaminos() const {
+    return caminos;
+}
+std::map<std::string, int> Enrutador::getCostos() const {
+    return costos;
+}
