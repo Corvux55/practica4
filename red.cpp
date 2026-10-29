@@ -7,6 +7,8 @@
 #include <algorithm>// darle la vuelta al camino
 #include <map>
 #include <string>
+#include <cstdlib> // para generar numeros aleatorios (rand y srand)
+#include <ctime>   // para inicializar la semilla con el tiempo actual
 
 void red::agregarEnrutador(const std::string &nombre){
     if(enrutadores.find(nombre) == enrutadores.end()){//crea solo si no existe
@@ -126,13 +128,60 @@ bool red::cargarDesdeArchivo(const std::string& rutaArchivo) {
 void red::imprimirRed() const {
     std::cout << "=== Topologia de la Red ===" << std::endl;
     for (auto& [n, e] : enrutadores) {
-        e.verVecinos(); // Usamos el método de impresión del compañero.
+        e.verVecinos(); // Usamos el método de impresión.
     }
 }
 
 void red::imprimirTablas() const {
     std::cout << "\n=== Tablas de Enrutamiento ===" << std::endl;
     for (auto& [n, e] : enrutadores) {
-        e.verTabla(); // Usamos el método de tabla del compañero.
+        e.verTabla(); // Usamos el método de tabla.
     }
+}
+
+// Consultar e imprimir la mejor ruta y el costo directo usando la tabla del origen
+bool red::consultarCamino(const std::string& origen, const std::string& destino) const {
+    // Verificamos que ambos enrutadores existan en el mapa
+    if (enrutadores.find(origen) == enrutadores.end() || enrutadores.find(destino) == enrutadores.end()) {
+        std::cout << "Error: Uno o ambos enrutadores no existen en la red." << std::endl;
+        return false;
+    }
+
+    std::cout << "\n=== Consultar camino de " << origen << " a " << destino << " ===" << std::endl;
+    // Mostramos la tabla del origen para ver la ruta resultante hacia el destino
+    enrutadores.at(origen).verTabla();
+    return true;
+}
+
+// Generar una red de forma aleatoria con cierta cantidad de nodos y enlaces
+void red::generarRedAleatoria(int numNodos, int probabilidadEnlace, int costoMaximo) {
+    // Limpiamos los enrutadores que teniamos cargados previamente
+    enrutadores.clear();
+
+    // Sembramos la semilla para los numeros aleatorios con el tiempo actual
+    std::srand(std::time(nullptr));
+
+    // Creamos los nombres de los nodos como Router_1, Router_2...
+    std::vector<std::string> nombresNodos;
+    for (int i = 1; i <= numNodos; ++i) {
+        std::string nombre = "R" + std::to_string(i);
+        nombresNodos.push_back(nombre);
+        agregarEnrutador(nombre);
+    }
+
+    // Recorremos todos los pares de nodos para crear enlaces aleatorios
+    for (size_t i = 0; i < nombresNodos.size(); ++i) {
+        for (size_t j = i + 1; j < nombresNodos.size(); ++j) {
+            // Evaluamos la probabilidad (de 0 a 100)
+            int azar = std::rand() % 100;
+            if (azar < probabilidadEnlace) {
+                int costo = (std::rand() % costoMaximo) + 1; // costo aleatorio entre 1 y costoMaximo
+                enrutadores[nombresNodos[i]].agregarVecino(nombresNodos[j], costo);
+                enrutadores[nombresNodos[j]].agregarVecino(nombresNodos[i], costo);
+            }
+        }
+    }
+
+    // Recalculamos todas las tablas con la red recien creada
+    recalcularTodo();
 }
